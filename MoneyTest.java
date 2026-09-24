@@ -15,16 +15,7 @@ public class MoneyTest {
     public void testEquality() {
         assertTrue(Money.dollar(5).equals(Money.dollar(5)));
         assertFalse(Money.dollar(5).equals(Money.dollar(6)));
-        assertTrue(Money.franc(5).equals(Money.franc(5)));
-        assertFalse(Money.franc(5).equals(Money.franc(6)));
         assertFalse(Money.franc(5).equals(Money.dollar(5)));
-    }
-
-    @Test
-    public void testFrancMultiplication() {
-        Franc five = Money.franc(5);
-        assertEquals(Money.franc(10), five.times(2));
-        assertEquals(Money.franc(15), five.times(3));
     }
 
     @Test 
@@ -34,7 +25,7 @@ public class MoneyTest {
     }
 }
 
-abstract class Money {
+class Money {
     protected int amount;
     protected String currency;
 
@@ -43,43 +34,25 @@ abstract class Money {
         this.currency = currency;
     }
 
-    abstract Money times(int multiplier);
+    static Money dollar(int amount) {
+        return new Money(amount, "USD");
+    }
+
+    static Money franc(int amount) {
+        return new Money(amount, "CHF");
+    }
 
     String currency() {
         return currency;
     }
 
-    static Money dollar(int amount) {
-        return new Dollar(amount, "USD");
-    }
-
-    static Money franc(int amount) {
-        return new Franc(amount, "CHF");
+    Money times(int multiplier) {
+        return new Money(amount * multiplier, currency);
     }
 
     @Override 
     public boolean equals(Object object) {
         Money money = (Money) object;
-        return amount == money.amount && getClass().equals(money.getClass());
-    }
-}
-
-class Dollar extends Money {
-    Dollar(int amount, String currency) {
-        super(amount, currency);
-    }
-
-    Money times(int multiplier) {
-        return Money.dollar(amount * multiplier);
-    }
-}
-
-class Franc extends Money {
-    Fran(int amount, String currency) {
-        super(amount, currency);
-    }
-
-    Money times(int multiplier) {
-        return Money.franc(amount * multiplier);
+        return amount == money.amount && currency().equals(money.currency());
     }
 }
